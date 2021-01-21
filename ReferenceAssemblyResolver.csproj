@@ -11,4 +11,28 @@
     </Reference>
   </ItemGroup>
 
+  <PropertyGroup>
+    <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows> 
+    <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX> 
+    <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <MonoDisWindowsFiles Include="monodis/windows/**/*.*" />
+    <MonoDisOSXFiles Include="monodis/macos/**/*.*" />
+    <MonoDisLinuxFiles Include="monodis/linux/**/*.*" />
+  </ItemGroup>
+
+  <Target Name="CopyCustomContentWindows" AfterTargets="AfterBuild" Condition="'$(IsWindows)'=='true'">
+    <Copy SourceFiles="@(MonoDisWindowsFiles)" DestinationFolder="$(OutDir)\%(RecursiveDir)" SkipUnchangedFiles="true" Retries="3" RetryDelayMilliseconds="300" />
+  </Target>
+
+  <Target Name="CopyCustomContentMacOS" AfterTargets="AfterBuild" Condition="'$(IsOSX)'=='true'">
+    <Copy SourceFiles="@(MonoDisOSXFiles)" DestinationFolder="$(OutDir)\%(RecursiveDir)" SkipUnchangedFiles="true" Retries="3" RetryDelayMilliseconds="300" />
+  </Target>
+
+  <Target Name="CopyCustomContentLinux" AfterTargets="AfterBuild" Condition="'$(IsLinux)'=='true'">
+    <Copy SourceFiles="@(MonoDisLinuxFiles)" DestinationFolder="$(OutDir)\%(RecursiveDir)" SkipUnchangedFiles="true" Retries="3" RetryDelayMilliseconds="300" />
+  </Target>
+
 </Project>
